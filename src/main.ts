@@ -1,7 +1,5 @@
 class TodoApp {
-  constructor() {
-
-  }
+   constructor() {}
 }
 
 export default TodoApp;
