@@ -30,6 +30,7 @@ body {
   background-color: var(--clr);
   color: var(--color-tertiary);
   min-height: 100%;
+  position: relative;
 }
 
 .logo {
@@ -49,7 +50,7 @@ body {
   padding: 1.5rem 0;
 }
 
-.task__add {
+/* .task__add {
   background-color: var(--color-primary);
   border-radius: 10px;
   margin: 0 auto;
@@ -59,9 +60,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+  visibility: hidden;
+} */
 
-.task__add button {
+.task__add-btn {
+  position: fixed;
+  bottom: 3rem;
+  left: 50%;
+  right: 50%;
   font-size: 3.5rem;
   height: 4rem;
   width: 4rem;

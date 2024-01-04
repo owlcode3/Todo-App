@@ -8,12 +8,12 @@
     <title>Todo App</title>
   </head>
 
-  <body>
+  <body class="body">
     <div class="input">
       <button class="cancel">x</button>
       <div class="input-box">
-        <textarea name="input" id="" cols="30" rows="10"></textarea>
-        <button>ADD</button>
+        <textarea name="input" id="textArea" cols="30" rows="10"></textarea>
+        <button id="addTodo">ADD</button>
       </div>
     </div>
     <div id="app">
@@ -21,9 +21,9 @@
         <span>TASKR</span>
       </div>
       <div class="task">
-        <div class="task__add">
-          <button>+</button>
-        </div>
+        <!-- <div class="task__add-g"> -->
+        <button class="task__add-btn">+</button>
+        <!-- </div> -->
         <ul class="task__lists">
           <li class="task__list">
             <p class="task__texts">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta veritatis sed,
