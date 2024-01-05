@@ -130,7 +130,13 @@ body {
   font-weight: bolder;
 }
 
-.task__added button {
+.edit-box {
+  display: flex;
+  gap: 3rem;
+}
+
+.edit-btn,
+.remove-btn {
   font-size: 1.3rem;
   height: 3rem;
   width: 7rem;
@@ -142,6 +148,10 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.remove-btn {
+  background-color: red;
 }
 
 .overlay {

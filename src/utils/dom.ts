@@ -2,10 +2,12 @@ export const mapElements = (
    element: string | HTMLElement,
    object: { [Key: string]: string | HTMLElement | NodeList }
 ) => {
+   let container: HTMLElement;
+
    if (element instanceof HTMLElement) {
-      element = element;
+      container = element;
    } else {
-      element = document.querySelector(element) as HTMLElement;
+      container = document.querySelector(element)!;
    }
 
    const elements: { [Key: string]: Element | NodeList | null } = {};
@@ -18,14 +20,14 @@ export const mapElements = (
       } else if (entry instanceof NodeList || Array.isArray(entry)) {
          elements[key] = entry as NodeList;
       } else if (typeof entry === "string") {
-         elements[key] = (element as HTMLElement).querySelectorAll(entry);
+         elements[key] = container.querySelectorAll(entry);
 
          if ((elements[key] as NodeList).length === 0) {
             elements[key] = null;
          } else if ((elements[key] as NodeList).length === 1) {
-            elements[key] = (element as HTMLElement).querySelector(entry);
+            elements[key] = container.querySelector(entry);
          } else {
-            elements[key] = (element as HTMLElement).querySelectorAll(entry);
+            elements[key] = container.querySelectorAll(entry);
          }
       }
    });

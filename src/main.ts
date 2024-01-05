@@ -12,7 +12,7 @@ class TodoApp {
 
    elements: {
       [K in keyof ReturnType<typeof mapElements>]: Element | NodeList | null;
-   };
+   } = {};
 
    todos: Todo[] = [];
 
@@ -27,6 +27,7 @@ class TodoApp {
          addTodoBtn: "#addTodo",
          task: ".task",
          errorEl: ".error-message"
+         // removeTodoBtn: ".remove-btn"
       });
 
       this.retrieveStorage();
@@ -34,6 +35,7 @@ class TodoApp {
       this.showOverlay();
       this.hideOverlay();
       this.storeTodos();
+      this.deleteTodo();
    }
 
    hideOverlay() {
@@ -70,10 +72,26 @@ class TodoApp {
             });
          }
 
-         this.populateStorage();
-
          AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value = "";
+
+         this.populateStorage();
          this.render();
+      });
+   }
+
+   deleteTodo() {
+      document.addEventListener("click", event => {
+         const target = event.target as HTMLElement;
+
+         if (target.closest && target.closest(".task__lists")) {
+            if (target.classList.contains("remove-btn")) {
+               const id = target.dataset.id!;
+               this.todos = this.todos.filter(todo => todo.id !== id);
+
+               this.populateStorage();
+               this.render();
+            }
+         }
       });
    }
 
@@ -87,7 +105,6 @@ class TodoApp {
       }
 
       this.todos = this.todos.concat(JSON.parse(localStorage.getItem("todos")!));
-      this.render();
    }
 
    render() {
@@ -108,22 +125,30 @@ class TodoApp {
          return;
       }
 
-      const listEl = (text: string, day: string, month: string, year: number) => /*html*/ `
-              <li class="task__list">
-                <p class="task__texts">${text}</p>
-                <div class="task__added">
-                  <div class="task__date">
-                    <span>Added on</span>
-                    <span>:</span>
-                    <span>${day}/${month}/${year}</span>
-                  </div>
-                  <button>Remove</button>
-                </div>
-              </li>`;
+      const listEl = (
+         text: string,
+         id: string,
+         day: string,
+         month: string,
+         year: number
+      ) => /*html*/ `
+          <li class="task__list">
+            <p class="task__texts">${text}</p>
+            <div class="task__added">
+              <div class="task__date">
+                <span>Added on</span>
+                <span>:</span>
+                <span>${day}/${month}/${year}</span>
+              </div>
+              <div class="edit-box">
+                <button class="edit-btn">Edit</button>
+                <button data-id="${id}" class="remove-btn">Remove</button>
+              </div>
+            </div>
+          </li>`;
 
-      const todos = this.todos.map(({ text }) => listEl(text, day, month, year)).join("");
+      const todos = this.todos.map(({ text, id }) => listEl(text, id, day, month, year)).join("");
 
-      AsHtmlElement(this.elements.taskLists).innerHTML = "";
       AsHtmlElement(this.elements.taskLists).innerHTML = todos;
    }
 }
