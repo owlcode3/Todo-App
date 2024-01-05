@@ -98,18 +98,16 @@ body {
   font-size: 1.2rem;
   font-weight: 400;
   border: 0.1px solid var(--clr);
-  height: auto;
   width: 85%;
   border-radius: 1px;
-  display: flex;
-  flex-direction: column;
-  height: auto;
   margin-bottom: 3rem;
 }
 
 .task__texts {
+  width: 100%;
   padding: 1rem;
-  text-align: left;
+  word-wrap: break-word;
+  font-size: 1.8rem;
 }
 
 .task__added {
