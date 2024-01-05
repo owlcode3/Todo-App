@@ -20,7 +20,7 @@ class TodoApp {
       this.element = element;
       this.elements = mapElements(this.element, {
          overlay: ".overlay",
-         taskList: ".task__list",
+         taskLists: ".task__lists",
          textArea: "#textArea",
          cancelBtn: ".cancel",
          showOverlayBtn: ".task__add-btn",
@@ -45,24 +45,62 @@ class TodoApp {
       AsHtmlElement(this.elements.showOverlayBtn).addEventListener("click", () => {
          AsHtmlElement(this.elements.overlay).style.display = "flex";
          AsHtmlElement(this.elements.task).removeChild(AsHtmlElement(this.elements.showOverlayBtn));
+         AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).focus();
       });
    }
 
    storeTodos() {
-      AsHtmlElement<HTMLTextAreaElement>(this.elements.addTodoBtn).addEventListener("click", _ => {
+      AsHtmlElement(this.elements.addTodoBtn).addEventListener("click", _ => {
          if (AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value.trim() === "") {
             AsHtmlElement(this.elements.errorEl).style.display = "block";
             return;
          } else {
             AsHtmlElement(this.elements.errorEl).style.display = "none";
             AsHtmlElement(this.elements.overlay).style.display = "none";
-            this.todos.push({
+            AsHtmlElement(this.elements.task).appendChild(
+               AsHtmlElement(this.elements.showOverlayBtn)
+            );
+
+            this.todos = this.todos.concat({
                id: window.crypto.randomUUID(),
                text: AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value,
                completed: false
             });
          }
+
+         AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value = "";
+         this.renderTodos();
       });
+   }
+
+   renderTodos() {
+      const currentDate = new Date();
+
+      const day = currentDate.getDate().toString().padStart(2, "0");
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+      const year = currentDate.getFullYear();
+
+      const todos = this.todos
+         .map(
+            ({ text }) =>
+               `
+             <li class="task__list">
+               <p class="task__texts">${text}</p>
+               <div class="task__added">
+                <div class="task__date">
+                <span>Added on</span>
+                <span>:</span>
+                 <span>${day}/${month}/${year}</span>
+                </div>
+               <button>Remove</button>
+              </div>
+             </li>
+           `
+         )
+         .join("");
+
+      AsHtmlElement(this.elements.taskLists).innerHTML = "";
+      AsHtmlElement(this.elements.taskLists).innerHTML = todos;
    }
 }
 
