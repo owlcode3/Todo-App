@@ -186,7 +186,8 @@ body {
   padding: .5rem;
 }
 
-.input-box button {
+#addTodo,
+#updateTodo {
   font-size: 1.3rem;
   height: 4rem;
   width: 7rem;
@@ -199,6 +200,10 @@ body {
   justify-content: center;
   align-self: flex-end;
   cursor: pointer;
+}
+
+#updateTodo {
+  display: none;
 }
 
 .cancel {
@@ -232,7 +237,7 @@ body {
 @media (max-width:46.875em) {
 
   .logo {
-    font-size: 1.8rem;
+    font-size: 2rem;
     height: 7rem;
   }
 
