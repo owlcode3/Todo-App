@@ -77,7 +77,8 @@ body {
   cursor: pointer;
 }
 
-.task__lists {
+.task__lists,
+.completed-task__lists {
   background-color: var(--color-primary);
   list-style: none;
   width: 98%;
@@ -90,7 +91,13 @@ body {
   min-height: calc(100vh - 15rem);
 }
 
-.task__list {
+.completed-task__lists {
+  border: 1px solid green;
+  display: none;
+}
+
+.task__list,
+.completed-task__list {
   font-size: 1.2rem;
   font-weight: 400;
   border: 0.1px solid var(--clr);
@@ -99,11 +106,16 @@ body {
   margin-bottom: 3rem;
 }
 
-.task__texts {
+.task__texts,
+.completed-task__texts {
   width: 100%;
   padding: 1rem;
   word-wrap: break-word;
   font-size: 1.8rem;
+}
+
+.completed-task__texts {
+  text-decoration: line-through;
 }
 
 .task__added {
