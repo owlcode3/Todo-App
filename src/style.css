@@ -253,12 +253,14 @@ body {
     height: 7rem;
   }
 
-  .task__list {
+  .task__list,
+  .completed-task__list {
     font-size: 1.2rem;
     width: 95%;
   }
 
-  .task__texts {
+  .task__texts,
+  .completed-task__texts {
     font-size: 1.5rem;
   }
 

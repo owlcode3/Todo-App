@@ -1,9 +1,11 @@
 import AsHtmlElement from "./utils/asHtmlElement";
 import { mapElements } from "./utils/dom";
+import { CompletedListEl, EmptyTodoListsText, ListEl } from "./utils/htmlTemplate";
 
 interface Todo {
    id: string;
    text: string;
+   date: Date;
    completed: boolean;
 }
 
@@ -15,6 +17,7 @@ class TodoApp {
    } = {};
 
    todos: Todo[] = [];
+   date!: Date;
 
    constructor(element: any) {
       this.element = element;
@@ -69,15 +72,22 @@ class TodoApp {
             AsHtmlElement(this.elements.errorEl).style.display = "block";
             return;
          }
+
          AsHtmlElement(this.elements.errorEl).style.display = "none";
          AsHtmlElement(this.elements.overlay).style.display = "none";
          AsHtmlElement(this.elements.task).appendChild(AsHtmlElement(this.elements.openOverlayBtn));
 
+         this.date = new Date();
+         console.log(this.date);
+
          this.todos = this.todos.concat({
             id: window.crypto.randomUUID(),
             text: AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value,
+            date: this.date,
             completed: false
          });
+
+         console.log(this.date);
 
          AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value = "";
 
@@ -112,19 +122,17 @@ class TodoApp {
    }
 
    deleteTodo() {
-      document.addEventListener("click", e => {
+      AsHtmlElement(this.elements.taskLists).addEventListener("click", e => {
          const target = e.target as HTMLElement;
 
-         if (target.closest && target.closest(".task__lists")) {
-            if (target.classList.contains("remove-btn")) {
-               e.stopImmediatePropagation();
+         if (target.classList.contains("remove-btn")) {
+            e.stopImmediatePropagation();
 
-               const id = target.dataset.id!;
-               this.todos = this.todos.filter(todo => todo.id !== id);
+            const id = target.dataset.id!;
+            this.todos = this.todos.filter(todo => todo.id !== id);
 
-               this.populateStorage();
-               this.render();
-            }
+            this.populateStorage();
+            this.render();
          }
       });
    }
@@ -177,14 +185,15 @@ class TodoApp {
          const target = e.target as HTMLElement;
 
          const taskListElement = target.closest(".task__list") as HTMLElement;
-
          if (target.closest(".task__list") || target.classList.contains("task__list")) {
             const id = taskListElement!.dataset.id;
+
             this.todos = this.todos.map(todo =>
                todo.id === id
                   ? {
                        ...todo,
-                       completed: true
+                       completed: true,
+                       date: new Date()
                     }
                   : todo
             );
@@ -208,7 +217,8 @@ class TodoApp {
                todo.id === id
                   ? {
                        ...todo,
-                       completed: false
+                       completed: false,
+                       date: this.date
                     }
                   : todo
             );
@@ -220,76 +230,26 @@ class TodoApp {
    }
 
    render() {
-      const currentDate = new Date();
-      const day = currentDate.getDate().toString().padStart(2, "0");
-      const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-      const year = currentDate.getFullYear();
-
       if (this.todos.length === 0 || this.todos.every(todo => todo.completed)) {
-         const el = /*html*/ `
-                                  <h2 class="empty-todo">
-                                    Add todos to see your list of todos here.
-                                  </h2>
-                                  `;
+         AsHtmlElement(this.elements.taskLists).innerHTML = EmptyTodoListsText();
+      } else {
+         console.log(this.date);
+         const todos = this.todos
+            .filter(todo => !todo.completed)
+            .map(({ text, id, date }) => ListEl(text, id, date!))
+            .join("");
 
-         AsHtmlElement(this.elements.taskLists).innerHTML = el;
-         return;
+         AsHtmlElement(this.elements.taskLists).innerHTML = todos;
       }
 
-      const listEl = (
-         text: string,
-         id: string,
-         day: string,
-         month: string,
-         year: number
-      ) => /*html*/ `
-                            <li class="task__list" data-id="${id}">
-                              <p class="task__texts">${text}</p>
-                              <div class="task__added">
-                                <div class="task__date">
-                                  <span>Added on</span>
-                                  <span>:</span>
-                                  <span>${day}/${month}/${year}</span>
-                                </div>
-                                <div class="edit-box">
-                                  <button class="edit-btn">Edit</button>
-                                  <button data-id="${id}" class="remove-btn">Delete</button>
-                                </div>
-                              </div>
-                            </li>`;
-
-      const completedListEl = (
-         text: string,
-         id: string,
-         day: string,
-         month: string,
-         year: number
-      ) => /*html*/ `
-                            <li class="completed-task__list" data-id="${id}">
-                              <p class="completed-task__texts">${text}</p>
-                              <div class="task__added">
-                                <div class="task__date">
-                                  <span>Completed on</span>
-                                  <span>:</span>
-                                  <span>${day}/${month}/${year}</span>
-                                </div>
-                              </div>
-                            </li>`;
-
-      const todos = this.todos
-         .filter(todo => !todo.completed)
-         .map(({ text, id }) => listEl(text, id, day, month, year))
-         .join("");
-
-      AsHtmlElement(this.elements.taskLists).innerHTML = todos;
-
       const findCompletedTodo = this.todos.some(todo => todo.completed);
-      const completedTodos = this.todos
-         .filter(todo => todo.completed)
-         .map(({ text, id }) => completedListEl(text, id, day, month, year))
-         .join("");
 
       if (findCompletedTodo) {
+         const completedTodos = this.todos
+            .filter(todo => todo.completed)
+            .map(({ text, id, date }) => CompletedListEl(text, id, date!))
+            .join("");
+
          AsHtmlElement(this.elements.completedTaskLists).style.display = "flex";
          AsHtmlElement(this.elements.completedTaskLists).innerHTML = completedTodos;
       } else {
