@@ -33,7 +33,8 @@ class TodoApp {
          task: ".task",
          errorEl: ".error-message"
       });
-
+      this.date = new Date();
+      console.log(this.date);
       this.retrieveStorage();
       this.render();
       this.onClickOpenOverlayBtn();
@@ -233,10 +234,15 @@ class TodoApp {
       if (this.todos.length === 0 || this.todos.every(todo => todo.completed)) {
          AsHtmlElement(this.elements.taskLists).innerHTML = EmptyTodoListsText();
       } else {
+         this.date = this.date;
          console.log(this.date);
+         console.log(this.todos);
+
+         this.todos.forEach(({ date }) => console.log(new Date(date)));
+
          const todos = this.todos
             .filter(todo => !todo.completed)
-            .map(({ text, id, date }) => ListEl(text, id, date!))
+            .map(({ text, id, date }) => ListEl(text, id, new Date(date)))
             .join("");
 
          AsHtmlElement(this.elements.taskLists).innerHTML = todos;
@@ -247,7 +253,7 @@ class TodoApp {
       if (findCompletedTodo) {
          const completedTodos = this.todos
             .filter(todo => todo.completed)
-            .map(({ text, id, date }) => CompletedListEl(text, id, date!))
+            .map(({ text, id, date }) => CompletedListEl(text, id, new Date(date)))
             .join("");
 
          AsHtmlElement(this.elements.completedTaskLists).style.display = "flex";
