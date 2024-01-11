@@ -7,6 +7,7 @@ interface Todo {
    text: string;
    date: Date;
    completed: boolean;
+   completedDate: Date | undefined;
 }
 
 class TodoApp {
@@ -33,8 +34,7 @@ class TodoApp {
          task: ".task",
          errorEl: ".error-message"
       });
-      this.date = new Date();
-      console.log(this.date);
+
       this.retrieveStorage();
       this.render();
       this.onClickOpenOverlayBtn();
@@ -85,10 +85,9 @@ class TodoApp {
             id: window.crypto.randomUUID(),
             text: AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value,
             date: this.date,
-            completed: false
+            completed: false,
+            completedDate: undefined
          });
-
-         console.log(this.date);
 
          AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value = "";
 
@@ -194,7 +193,7 @@ class TodoApp {
                   ? {
                        ...todo,
                        completed: true,
-                       date: new Date()
+                       completedDate: new Date()
                     }
                   : todo
             );
@@ -214,12 +213,13 @@ class TodoApp {
             target.classList.contains("completed-task__list")
          ) {
             const id = taskListElement!.dataset.id;
+            console.log(this.date);
+
             this.todos = this.todos.map(todo =>
                todo.id === id
                   ? {
                        ...todo,
-                       completed: false,
-                       date: this.date
+                       completed: false
                     }
                   : todo
             );
@@ -234,12 +234,6 @@ class TodoApp {
       if (this.todos.length === 0 || this.todos.every(todo => todo.completed)) {
          AsHtmlElement(this.elements.taskLists).innerHTML = EmptyTodoListsText();
       } else {
-         this.date = this.date;
-         console.log(this.date);
-         console.log(this.todos);
-
-         this.todos.forEach(({ date }) => console.log(new Date(date)));
-
          const todos = this.todos
             .filter(todo => !todo.completed)
             .map(({ text, id, date }) => ListEl(text, id, new Date(date)))
@@ -253,7 +247,9 @@ class TodoApp {
       if (findCompletedTodo) {
          const completedTodos = this.todos
             .filter(todo => todo.completed)
-            .map(({ text, id, date }) => CompletedListEl(text, id, new Date(date)))
+            .map(({ text, id, completedDate }) =>
+               CompletedListEl(text, id, new Date(completedDate!))
+            )
             .join("");
 
          AsHtmlElement(this.elements.completedTaskLists).style.display = "flex";
