@@ -3,11 +3,11 @@ export const ListEl = (text: string, id: string, date: Date) => /*html*/ `
    <p class="task__texts">${text}</p>
    <div class="task__added">
      <div class="task__date">
-       <span>Added on ${date!.getMinutes()}</span>
+       <span>Added on</span>
        <span>:</span>
-       <span>${date!.getDate().toString().padStart(2, "0")}/${(date!.getMonth() + 1)
+       <span>${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
    .toString()
-   .padStart(2, "0")}/${date!.getFullYear()}</span>
+   .padStart(2, "0")}/${date.getFullYear()}</span>
      </div>
      <div class="edit-box">
        <button class="edit-btn">Edit</button>
@@ -16,22 +16,18 @@ export const ListEl = (text: string, id: string, date: Date) => /*html*/ `
    </div>
  </li>`;
 
-export const CompletedListEl = (
-   text: string,
-   id: string,
-   completedDate: Date | undefined
-) => /*html*/ `
+export const CompletedListEl = (text: string, id: string, completedDate: Date) => /*html*/ `
  <li class="completed-task__list" data-id="${id}">
    <p class="completed-task__texts">${text}</p>
    <div class="task__added">
      <div class="task__date">
-       <span>Completed on ${completedDate?.getMinutes()}</span>
+       <span>Completed on ${completedDate.getMinutes()}</span>
        <span>:</span>
-       <span>${completedDate?.getDate().toString().padStart(2, "0")}/${(
+       <span>${completedDate.getDate().toString().padStart(2, "0")}/${(
    completedDate!.getMonth() + 1
 )
    .toString()
-   .padStart(2, "0")}/${completedDate?.getFullYear()}</span>
+   .padStart(2, "0")}/${completedDate.getFullYear()}</span>
      </div>
    </div>
  </li>`;

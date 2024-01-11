@@ -7,7 +7,7 @@ interface Todo {
    text: string;
    date: Date;
    completed: boolean;
-   completedDate: Date | undefined;
+   completedDate?: Date;
 }
 
 class TodoApp {
@@ -18,7 +18,6 @@ class TodoApp {
    } = {};
 
    todos: Todo[] = [];
-   date!: Date;
 
    constructor(element: any) {
       this.element = element;
@@ -78,15 +77,13 @@ class TodoApp {
          AsHtmlElement(this.elements.overlay).style.display = "none";
          AsHtmlElement(this.elements.task).appendChild(AsHtmlElement(this.elements.openOverlayBtn));
 
-         this.date = new Date();
-         console.log(this.date);
+         const date = new Date();
 
          this.todos = this.todos.concat({
             id: window.crypto.randomUUID(),
             text: AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value,
-            date: this.date,
-            completed: false,
-            completedDate: undefined
+            date: date,
+            completed: false
          });
 
          AsHtmlElement<HTMLTextAreaElement>(this.elements.textArea).value = "";
@@ -185,7 +182,11 @@ class TodoApp {
          const target = e.target as HTMLElement;
 
          const taskListElement = target.closest(".task__list") as HTMLElement;
+
          if (target.closest(".task__list") || target.classList.contains("task__list")) {
+            const cellText = document.getSelection();
+            if (cellText?.type === "Range") return;
+
             const id = taskListElement!.dataset.id;
 
             this.todos = this.todos.map(todo =>
@@ -212,8 +213,10 @@ class TodoApp {
             target.closest(".completed-task__list") ||
             target.classList.contains("completed-task__list")
          ) {
+            const cellText = document.getSelection();
+            if (cellText?.type === "Range") return;
+
             const id = taskListElement!.dataset.id;
-            console.log(this.date);
 
             this.todos = this.todos.map(todo =>
                todo.id === id

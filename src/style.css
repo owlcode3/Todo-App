@@ -104,6 +104,7 @@ body {
   width: 85%;
   border-radius: 1px;
   margin-bottom: 3rem;
+  cursor: pointer;
 }
 
 .task__texts,
